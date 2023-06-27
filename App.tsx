@@ -5,14 +5,16 @@
  * @format
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
@@ -24,6 +26,10 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
+import {buttons, logo, menu, mainPageStyles} from './styles/styles';
+import DeviceModal from './components/DeviceConnectionModal';
+import useBLE from './components/useBLE';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -54,6 +60,7 @@ function Section({children, title}: SectionProps): JSX.Element {
     </View>
   );
 }
+
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
