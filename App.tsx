@@ -6,120 +6,88 @@
  */
 
 import React, {useState} from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
 
 import {buttons, logo, menu, mainPageStyles} from './styles/styles';
 import DeviceModal from './components/DeviceConnectionModal';
 import useBLE from './components/useBLE';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const App = () => {
+  const {
+    requestPermissions,
+    scanForPeripherals,
+    allDevices,
+    connectToDevice,
+    connectedDevice,
+    disconnectFromDevice,
+  } = useBLE();
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  const scanForDevices = () => {
+    requestPermissions(isGranted => {
+      if (isGranted) {
+        scanForPeripherals();
+      }
+    });
+  };
 
+  const hideModal = () => {
+    setIsModalVisible(false);
+  };
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const openModal = async () => {
+    scanForDevices();
+    setIsModalVisible(true);
+  };
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const navigateBack = () => {
+    disconnectFromDevice();
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <SafeAreaView style={mainPageStyles.container}>
+      <View style={mainPageStyles.mainPageTitleWrapper}>
+        {connectedDevice ? (
+          <View style={menu.menuWrapper}>
+            <Text style={menu.menuTitleText}>Menu</Text>
+            <TouchableOpacity style={buttons.optionButton}>
+              <Text style={buttons.optionButtonText}>Info</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={buttons.optionButton}>
+              <Text style={buttons.optionButtonText}>Control Panel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={buttons.optionButton}>
+              <Text style={buttons.optionButtonText}>Log</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={navigateBack} style={buttons.backButton}>
+              <Text style={buttons.optionButtonText}>Back</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={logo.logoWrapper}>
+            <Image
+              source={require('./images/earphone_logo.jpg')}
+              style={logo.logoStyle}
+            />
+            <Text style={logo.logoTitleText}>BLE Widget</Text>
+            <TouchableOpacity
+              onPress={connectedDevice ? disconnectFromDevice : openModal}
+              style={buttons.optionButton}>
+              <Text style={buttons.optionButtonText}>
+                {connectedDevice ? 'Disconnect' : 'Connect'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+      <DeviceModal
+        closeModal={hideModal}
+        visible={isModalVisible}
+        connectToPeripheral={connectToDevice}
+        devices={allDevices}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
     </SafeAreaView>
   );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;
