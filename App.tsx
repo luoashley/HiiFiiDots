@@ -6,11 +6,15 @@
  */
 
 import React, {useState} from 'react';
-import {Image, SafeAreaView, Text, TouchableOpacity, View} from 'react-native';
-
-import {buttons, logo, menu, mainPageStyles} from './styles/styles';
+import {Image, SafeAreaView, Text, TouchableOpacity, View, Pressable} from 'react-native';
+import {buttons, logo, menu, mainPageStyles, pokemon} from './styles/styles';
 import DeviceModal from './components/DeviceConnectionModal';
 import useBLE from './components/useBLE';
+
+import Animated, {
+  LightSpeedInLeft,
+  LightSpeedOutRight,
+} from 'react-native-reanimated';
 
 const App = () => {
   const {
@@ -20,6 +24,11 @@ const App = () => {
     connectToDevice,
     connectedDevice,
     disconnectFromDevice,
+
+    // pokemon
+    yourParty,
+    billsPC,
+    exchangePokemon
   } = useBLE();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 

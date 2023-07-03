@@ -103,4 +103,46 @@ const modalStyle = StyleSheet.create({
   },
 });
 
-export {buttons, logo, menu, mainPageStyles, modalStyle};
+const pokemon = StyleSheet.create({
+  yourParty: {
+    marginTop: 10,
+    marginBottom: 50,
+  },
+  billsPc: {
+    marginVertical: 10,
+    height: '30%',
+  },
+  pokemonAvatar: {
+    height: '80%',
+    width: 50,
+    marginLeft: 5,
+  },
+  pokemonButtonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  blankTextTitle: {
+    marginHorizontal: 22,
+    color: 'black',
+    fontSize: 25,
+    fontWeight: 'bold',
+  },
+  connectButton: {
+    color: 'white',
+    textAlign: 'center',
+    flex: 1,
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 9,
+  },
+  connectContainer: {
+    flex: 1,
+  },
+  pcConnectTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export {buttons, logo, menu, mainPageStyles, modalStyle, pokemon};
